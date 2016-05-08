@@ -1,0 +1,56 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "com.demo.musicplayer"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // android support
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:design:23.3.0'
+
+    // dependency injection
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    // reactive extensions
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+
+    // event bus
+    compile 'org.greenrobot:eventbus:3.0.0'
+
+    // ************************
+    // ** Testing Frameworks **
+    // ************************
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.0.47-beta'
+    testCompile 'org.robolectric:robolectric:3.1-SNAPSHOT'
+}
+
