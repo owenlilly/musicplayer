@@ -3,4 +3,5 @@
     <string name="btn_text_pause">Pause</string>
     <string name="btn_text_play">Play</string>
     <string name="background">background</string>
+    <string name="cover_image">cover image</string>
 </resources>

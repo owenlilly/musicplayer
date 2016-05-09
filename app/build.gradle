@@ -27,6 +27,7 @@ android {
 
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -45,6 +46,9 @@ dependencies {
 
     // event bus
     compile 'org.greenrobot:eventbus:3.0.0'
+
+    // circular image
+    compile 'de.hdodenhof:circleimageview:2.0.0'
 
     // ************************
     // ** Testing Frameworks **

@@ -78,6 +78,14 @@ public class MediaController {
         return currentSong;
     }
 
+    public boolean isPlaying(){
+        return playerState == PlayerState.Playing;
+    }
+
+    public boolean isPaused(){
+        return playerState == PlayerState.Paused;
+    }
+
     private MediaPlayer getMediaPlayer(){
         if(mediaPlayer == null){
             synchronized (MediaController.class){
@@ -94,6 +102,7 @@ public class MediaController {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource(song.getPath());
+            mediaPlayer.setOnCompletionListener(mp -> bus.post(new OnPlayCompletedEvent(currentSong)));
             mediaPlayer.setOnPreparedListener(mp -> {
                 bus.post(new OnSongChangedEvent(song));
                 setPlayerState(PlayerState.Playing);
@@ -115,6 +124,18 @@ public class MediaController {
         Playing,
         Paused,
         Stopped
+    }
+
+    public static class OnPlayCompletedEvent {
+        private final SongDetails song;
+
+        public OnPlayCompletedEvent(SongDetails song) {
+            this.song = song;
+        }
+
+        public SongDetails getCompletedSong(){
+            return song;
+        }
     }
 
     public static class OnSongChangedEvent {

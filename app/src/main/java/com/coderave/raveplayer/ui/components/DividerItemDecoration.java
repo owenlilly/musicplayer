@@ -1,13 +1,14 @@
-package com.coderave.raveplayer.utils;
+package com.coderave.raveplayer.ui.components;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.coderave.raveplayer.R;
 
 /*
  * Copyright (C) 2014 The Android Open Source Project
@@ -26,10 +27,6 @@ import android.view.View;
  */
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
-    private static final int[] ATTRS = new int[]{
-            android.R.attr.listDivider
-    };
-
     public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
 
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
@@ -39,9 +36,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private int mOrientation;
 
     public DividerItemDecoration(Context context, int orientation) {
-        final TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(0);
-        a.recycle();
+        mDivider = context.getResources().getDrawable(R.drawable.line_divider);
         setOrientation(orientation);
     }
 
@@ -53,7 +48,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent) {
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
         } else {

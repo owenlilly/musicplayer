@@ -11,12 +11,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.coderave.raveplayer.MediaController;
+import com.coderave.raveplayer.PlayList;
 import com.coderave.raveplayer.R;
 import com.coderave.raveplayer.models.SongDetails;
 import com.coderave.raveplayer.observers.song.AllSongsObserver;
 import com.coderave.raveplayer.ui.components.BindableViewHolder;
 import com.coderave.raveplayer.ui.fragments.BaseTabFragment;
-import com.coderave.raveplayer.utils.DividerItemDecoration;
+import com.coderave.raveplayer.ui.components.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,7 @@ public class AllTracksFragment extends BaseTabFragment {
     public class AllTracksRecyclerAdapter extends RecyclerView.Adapter<AllTracksRecyclerAdapter.SimpleViewHolder> {
 
         private final List<SongDetails> mTitles;
+        private final PlayList playList = PlayList.getInstance();
 
         public AllTracksRecyclerAdapter(List<SongDetails> titles) {
             mTitles = titles;
@@ -75,7 +77,12 @@ public class AllTracksFragment extends BaseTabFragment {
             holder.artist.setText(song.getArtist());
             holder.itemView.setOnClickListener(v -> {
                 MediaController.getInstance().play(song);
-                Toast.makeText(getActivity(), song.getTitle(), Toast.LENGTH_SHORT).show();
+                if(!playList.getListName().equals("AllSongsList")){
+                    playList.clear();
+                    playList.addAll(mTitles);
+                    playList.setListName("AllSongsList");
+                }
+                playList.setCurrent(position);
             });
         }
 

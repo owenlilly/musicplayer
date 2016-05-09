@@ -7,7 +7,7 @@
 <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="@color/colorPrimary"
+    android:background="#bb000000"
     android:theme="@style/Theme.AppCompat.NoActionBar"
     xmlns:android="http://schemas.android.com/apk/res/android" />
 <!--</android.support.design.widget.AppBarLayout>-->
