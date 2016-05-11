@@ -1,12 +1,13 @@
 package com.coderave.raveplayer.ui;
 
 
-import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -44,6 +45,7 @@ public class NowPlayingActivity extends AppCompatActivity {
         initActionBar();
         initButtonClickListeners();
         initCoverArtIfSongSelected();
+        initBuildSpecificEnhancements();
     }
 
     @Override
@@ -52,6 +54,18 @@ public class NowPlayingActivity extends AppCompatActivity {
         updatePlayPauseButton();
         updateNextButtonState();
         updatePrevButtonState();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -69,7 +83,13 @@ public class NowPlayingActivity extends AppCompatActivity {
 
     @Subscribe
     public void onSongChangedEvent(MediaController.OnSongChangedEvent e){
-        initCoverArt(e.getSongDetails().getId());
+        Utils.loadLargeCoverOrDefaultArt(coverImage, e.getSongDetails());
+    }
+
+    private void initBuildSpecificEnhancements(){
+        if(Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT){
+            Utils.applyKitKatToolbarPadding(toolbar);
+        }
     }
 
     private void initActionBar(){
@@ -81,18 +101,7 @@ public class NowPlayingActivity extends AppCompatActivity {
     }
 
     private void initCoverArtIfSongSelected(){
-        if(mediaController.getCurrentSong() != null){
-            initCoverArt(mediaController.getCurrentSong().getId());
-        }
-    }
-
-    private void initCoverArt(int songId){
-        Bitmap coverArt = Utils.getCover(this, songId);
-        if(coverArt != null) {
-            coverImage.setImageBitmap(coverArt);
-        } else {
-            coverImage.setImageResource(R.drawable.default_cover_image);
-        }
+        Utils.loadLargeCoverOrDefaultArt(coverImage, mediaController.getCurrentSong());
     }
 
     private void initButtonClickListeners(){

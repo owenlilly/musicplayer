@@ -21,8 +21,8 @@ public class AllSongsObserver extends BaseSongObserver<SongDetails> {
         String displayName  = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
         String title        = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
         String path         = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-
-        return new SongDetails(id, artist, title, displayName, duration, path);
+        int albumId         = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+        return new SongDetails(id, artist, title, displayName, duration, path, albumId);
     }
 
     @Override

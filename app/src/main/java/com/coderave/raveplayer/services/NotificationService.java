@@ -39,16 +39,13 @@ public class NotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
             showOrUpdateNotification();
-            Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
         } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
-            Toast.makeText(this, "Clicked Previous", Toast.LENGTH_SHORT).show();
             if(playlist.hasPrev()){
                 mediaController.play(playlist.prev());
                 showOrUpdateNotification();
             }
             Log.i(LOG_TAG, "Clicked Previous");
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
-            Toast.makeText(this, "Clicked Play", Toast.LENGTH_SHORT).show();
             if(mediaController.isPlaying()) {
                 showOrUpdateNotification();
                 mediaController.pause();
@@ -58,16 +55,13 @@ public class NotificationService extends Service {
             }
             Log.i(LOG_TAG, "Clicked Play");
         } else if (intent.getAction().equals(Constants.ACTION.NEXT_ACTION)) {
-            Toast.makeText(this, "Clicked Next", Toast.LENGTH_SHORT).show();
             if(playlist.hasNext()){
                 mediaController.play(playlist.next());
                 showOrUpdateNotification();
             }
-            Log.i(LOG_TAG, "Clicked Next");
         } else if (intent.getAction().equals(
                 Constants.ACTION.STOPFOREGROUND_ACTION)) {
             Log.i(LOG_TAG, "Received Stop Foreground Intent");
-            Toast.makeText(this, "Service Stoped", Toast.LENGTH_SHORT).show();
             stopForeground(true);
             stopSelf();
         }

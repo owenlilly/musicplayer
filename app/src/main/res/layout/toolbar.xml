@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<android.support.design.widget.AppBarLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android">-->
-
-<android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="#bb000000"
-    android:theme="@style/Theme.AppCompat.NoActionBar"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
-<!--</android.support.design.widget.AppBarLayout>-->
+    android:theme="@style/Theme.AppCompat.NoActionBar" />

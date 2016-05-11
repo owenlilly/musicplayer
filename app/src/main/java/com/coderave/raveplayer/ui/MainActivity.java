@@ -2,7 +2,6 @@ package com.coderave.raveplayer.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
@@ -10,13 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coderave.raveplayer.MediaController;
-import com.coderave.raveplayer.PlayList;
 import com.coderave.raveplayer.R;
+import com.coderave.raveplayer.models.SongDetails;
 import com.coderave.raveplayer.ui.fragments.BaseTabFragment;
 import com.coderave.raveplayer.ui.fragments.main.AlbumsFragment;
 import com.coderave.raveplayer.ui.fragments.main.AllTracksFragment;
@@ -47,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     public static Context appContext;
 
     private final MediaController mediaController = MediaController.getInstance();
-    private final PlayList playlist = PlayList.getInstance();
     private final EventBus mBus = EventBus.getDefault();
 
     @Override
@@ -63,15 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         initTabLayout();
         initPlayPauseButton();
-
+        initCoverImage();
         updatePlayPauseButton();
-
-        coverImage.setOnClickListener(v -> {
-            if(mediaController.getCurrentSong() != null){
-                Intent i = new Intent(this, NowPlayingActivity.class);
-                startActivity(i);
-            }
-        });
     }
 
     @Override
@@ -82,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        mBus.unregister(this);
         super.onStop();
+        mBus.unregister(this);
     }
 
     @Override
@@ -94,21 +84,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void onSongChanged(MediaController.OnSongChangedEvent event) {
-        txtSongTitle.setText(event.getSongDetails().getTitle());
-        txtArtist.setText(event.getSongDetails().getArtist());
+        final SongDetails song = event.getSongDetails();
 
-        Bitmap coverArt = Utils.getSmallCover(this, event.getSongDetails().getId());
-        if(coverArt != null) {
-            coverImage.setImageBitmap(coverArt);
-        } else {
-            coverImage.setImageResource(R.drawable.default_cover_image);
-        }
+        txtSongTitle.setText(song.getTitle());
+        txtArtist.setText(song.getArtist());
+        Utils.loadSmallCoverOrDefaultArt(coverImage, song);
     }
 
     @Subscribe
     public void onPlayCompleted(MediaController.OnPlayCompletedEvent event) {
         updatePlayPauseButton();
-        autoPlayNext();
+        Utils.autoPlayNext();
     }
 
     @Subscribe
@@ -118,27 +104,40 @@ public class MainActivity extends AppCompatActivity {
 
     private void initBuildSpecificEnhancements() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            updateKitKatToolbarPaddingAndHeight();
+            Utils.applyKitKatToolbarPadding(toolbar);
         }
     }
 
-    private void initTabLayout() {
+    private void startNowPlayingActivity(){
+        Intent i = new Intent(this, NowPlayingActivity.class);
+        startActivity(i);
+    }
+
+    private void initTabLayout(){
         final List<BaseTabFragment> tabList = Arrays.<BaseTabFragment>asList(new AllTracksFragment(), new AlbumsFragment());
 
         TabBuilder.with(getSupportFragmentManager())
-                .setTabLayout(tabLayout)
-                .setViewPager(viewPager)
-                .setTabList(tabList)
-                .build();
+                    .setTabLayout(tabLayout)
+                    .setViewPager(viewPager)
+                    .setTabList(tabList)
+                    .build();
     }
 
-    private void initPlayPauseButton() {
+    private void initCoverImage(){
+        coverImage.setOnClickListener(v -> {
+            if(mediaController.getCurrentSong() != null){
+                startNowPlayingActivity();
+            }
+        });
+    }
+
+    private void initPlayPauseButton(){
         btnPlayPause.setOnClickListener(v -> togglePlayPause());
         btnPlayPause.setColor(Color.WHITE);
         btnPlayPause.setAnimDuration(100);
     }
 
-    private void togglePlayPause() {
+    private void togglePlayPause(){
         if (mediaController.isPlaying()) {
             MediaController.getInstance().pause();
         } else if (mediaController.isPaused()) {
@@ -151,33 +150,6 @@ public class MainActivity extends AppCompatActivity {
             btnPlayPause.setToPause();
         } else {
             btnPlayPause.setToPlay();
-        }
-    }
-
-    private void updateKitKatToolbarPaddingAndHeight(){
-        final int statusBarHeight = Utils.getStatusBarHeight(this);
-        toolbar.setPadding(0, statusBarHeight, 0, 0);
-        ViewGroup.LayoutParams params = toolbar.getLayoutParams();
-        params.height = params.height + statusBarHeight;
-        toolbar.setLayoutParams(params);
-    }
-
-    private void autoPlayNext() {
-        switch (playlist.getLoopStyle()) {
-            case LOOP_CURRENT: {
-                mediaController.play(playlist.current());
-            } break;
-            case LOOP_LIST: {
-                if (!playlist.hasNext()) {
-                    playlist.setCurrent(-1);
-                }
-                mediaController.play(playlist.next());
-            } break;
-            default: {
-                if (playlist.hasNext()) {
-                    mediaController.play(playlist.next());
-                }
-            } break;
         }
     }
 }

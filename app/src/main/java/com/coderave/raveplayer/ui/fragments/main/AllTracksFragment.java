@@ -73,22 +73,12 @@ public class AllTracksFragment extends BaseTabFragment {
 
         @Override
         public void onBindViewHolder(SimpleViewHolder holder, int position) {
-            SongDetails song = mTitles.get(position);
+            final SongDetails song = mTitles.get(position);
+
             holder.songTitle.setText(song.getTitle());
             holder.number.setText(String.valueOf(position+1));
             holder.artist.setText(song.getArtist());
-            holder.itemView.setOnClickListener(v -> {
-                MediaController.getInstance().play(song);
-                if(!playList.getListName().equals("AllSongsList")){
-                    playList.clear();
-                    playList.addAll(mTitles);
-                    playList.setListName("AllSongsList");
-                }
-                playList.setCurrent(position);
-                Intent i = new Intent(getActivity(), NotificationService.class);
-                i.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-                getActivity().startService(i);
-            });
+            holder.itemView.setOnClickListener(v -> playSong(song, position));
         }
 
         @Override
@@ -100,6 +90,19 @@ public class AllTracksFragment extends BaseTabFragment {
             final int pos = mTitles.size();
             mTitles.add(pos,song);
             notifyItemInserted(pos);
+        }
+
+        private void playSong(SongDetails song, int position){
+            MediaController.getInstance().play(song);
+            if(!playList.getListName().equals("AllSongsList")){
+                playList.clear();
+                playList.addAll(mTitles);
+                playList.setListName("AllSongsList");
+            }
+            playList.setCurrent(position);
+            Intent i = new Intent(getActivity(), NotificationService.class);
+            i.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+            getActivity().startService(i);
         }
 
         public class SimpleViewHolder extends BindableViewHolder {

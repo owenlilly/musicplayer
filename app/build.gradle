@@ -47,8 +47,9 @@ dependencies {
     // event bus
     compile 'org.greenrobot:eventbus:3.0.0'
 
-    // circular image
+    // images
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     // ************************
     // ** Testing Frameworks **

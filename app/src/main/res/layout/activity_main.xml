@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.MainActivity">
 
     <ImageView
@@ -49,24 +48,15 @@
             android:layout_alignParentBottom="true"
             android:background="#aa000000"
             android:orientation="horizontal"
-            android:paddingLeft="8dp"
             android:paddingRight="8dp">
 
-            <!--<ImageView-->
-                <!--android:id="@+id/cover_image"-->
-                <!--android:src="@drawable/default_cover_image"-->
-                <!--android:layout_width="60dp"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:contentDescription="@string/cover_image" />-->
-
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/cover_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/default_cover_image"
                 android:layout_centerVertical="true"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#aaffffff"/>
+                android:contentDescription="@string/cover_image" />
 
             <LinearLayout
                 android:layout_width="match_parent"

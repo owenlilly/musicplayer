@@ -1,17 +1,21 @@
 package com.coderave.raveplayer.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
+import android.support.v7.widget.Toolbar;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import com.coderave.raveplayer.MediaController;
+import com.coderave.raveplayer.PlayList;
+import com.coderave.raveplayer.R;
+import com.coderave.raveplayer.models.SongDetails;
+import com.squareup.picasso.Picasso;
 
 
 public class Utils {
+
+    private final static String albumArtUrl = "content://media/external/audio/albumart/";
 
     public static int getStatusBarHeight(Context context) {
         int result = 0;
@@ -22,43 +26,53 @@ public class Utils {
         return result;
     }
 
-    public static Bitmap getSmallCover(Context context, int id) {
-
-        // ImageLoader.getInstance().getDiskCache().g
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 1;
-        Bitmap curThumb = null;
-        try {
-            Uri uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-            ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
-            if (pfd != null) {
-                FileDescriptor fd = pfd.getFileDescriptor();
-                curThumb = BitmapFactory.decodeFileDescriptor(fd);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return curThumb;
+    public static void applyKitKatToolbarPadding(Toolbar toolbar){
+        final int statusBarHeight = getStatusBarHeight(toolbar.getContext());
+        toolbar.setPadding(0, statusBarHeight, 0, 0);
+        ViewGroup.LayoutParams params = toolbar.getLayoutParams();
+        params.height = params.height + statusBarHeight;
+        toolbar.setLayoutParams(params);
     }
 
-    public static Bitmap getCover(Context context, int id) {
+    public static void loadSmallCoverOrDefaultArt(final ImageView imageView, final SongDetails song){
+        Uri albumArtUri = Uri.parse(albumArtUrl+song.getAlbumId());
 
-        // ImageLoader.getInstance().getDiskCache().g
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 1;
-        Bitmap curThumb = null;
-        try {
-            Uri uri = Uri.parse("content://media/external/audio/media/" + id + "/albumart");
-            ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(uri, "r");
-            if (pfd != null) {
-                FileDescriptor fd = pfd.getFileDescriptor();
-                curThumb = BitmapFactory.decodeFileDescriptor(fd);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
+        loadCoverOrDefaultArt(albumArtUri, imageView);
+    }
+
+    public static void loadLargeCoverOrDefaultArt(final ImageView imageView, final SongDetails song) {
+        Uri albumArtUri = Uri.parse(albumArtUrl + song.getAlbumId());
+
+        loadCoverOrDefaultArt(albumArtUri, imageView);
+    }
+
+    private static void loadCoverOrDefaultArt(Uri uri, ImageView imageView){
+        Picasso.with(imageView.getContext())
+                .load(uri)
+                .placeholder(R.drawable.default_cover_image)
+                .error(R.drawable.default_cover_image)
+                .into(imageView);
+    }
+
+    public static void autoPlayNext() {
+        final PlayList playlist = PlayList.getInstance();
+        final MediaController mediaController = MediaController.getInstance();
+
+        switch (playlist.getLoopStyle()) {
+            case LOOP_CURRENT: {
+                mediaController.play(playlist.current());
+            } break;
+            case LOOP_LIST: {
+                if (!playlist.hasNext()) {
+                    playlist.setCurrent(-1);
+                }
+                mediaController.play(playlist.next());
+            } break;
+            default: {
+                if (playlist.hasNext()) {
+                    mediaController.play(playlist.next());
+                }
+            } break;
         }
-        return curThumb;
     }
 }
