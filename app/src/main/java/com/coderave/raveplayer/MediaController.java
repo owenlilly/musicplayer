@@ -102,10 +102,13 @@ public class MediaController {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource(song.getPath());
-            mediaPlayer.setOnCompletionListener(mp -> bus.post(new OnPlayCompletedEvent(currentSong)));
+            mediaPlayer.setOnCompletionListener(mp -> {
+                stop();
+                bus.post(new OnPlayCompletedEvent(currentSong));
+            });
             mediaPlayer.setOnPreparedListener(mp -> {
-                bus.post(new OnSongChangedEvent(song));
                 setPlayerState(PlayerState.Playing);
+                bus.post(new OnSongChangedEvent(song));
                 mp.start();
             });
             mediaPlayer.prepareAsync();

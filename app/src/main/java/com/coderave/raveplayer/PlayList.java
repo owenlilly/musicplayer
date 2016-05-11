@@ -13,7 +13,7 @@ public class PlayList {
     private final List<SongDetails> playlist = new ArrayList<>();
     private static volatile PlayList instance;
     private int currentPos;
-    private String listName;
+    private String listName = "";
     private LoopStyle loopStyle;
 
     private PlayList(){
@@ -33,7 +33,7 @@ public class PlayList {
 
     public void clear(){
         playlist.clear();
-        listName = null;
+        listName = "";
         setCurrent(NO_POSITION);
     }
 
@@ -45,6 +45,11 @@ public class PlayList {
 
     public int getCurrentPos(){
         return currentPos;
+    }
+
+    public SongDetails prev(){
+        currentPos -= 1;
+        return playlist.get(currentPos);
     }
 
     public SongDetails current(){
@@ -79,8 +84,12 @@ public class PlayList {
         return loopStyle;
     }
 
+    public boolean hasPrev() {
+        return playlist.size() > 0 && (currentPos-1) > NO_POSITION;
+    }
+
     public boolean hasNext() {
-        return playlist.size() >= (currentPos+1);
+        return playlist.size() > (currentPos+1);
     }
 
     public SongDetails next() {

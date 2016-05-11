@@ -1,5 +1,8 @@
 package com.coderave.raveplayer.ui;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
@@ -8,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.coderave.raveplayer.MediaController;
@@ -38,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.tabs)            TabLayout tabLayout;
     @Bind(R.id.toolbar)         Toolbar toolbar;
     @Bind(R.id.viewpager)       ViewPager viewPager;
-    //@Bind(R.id.cover_image)     ImageView coverImage;
+    @Bind(R.id.cover_image)     ImageView coverImage;
+
+    public static Context appContext;
 
     private final MediaController mediaController = MediaController.getInstance();
     private final PlayList playlist = PlayList.getInstance();
@@ -53,10 +59,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         initBuildSpecificEnhancements();
 
+        appContext = getApplicationContext();
+
         initTabLayout();
         initPlayPauseButton();
 
         updatePlayPauseButton();
+
+        coverImage.setOnClickListener(v -> {
+            if(mediaController.getCurrentSong() != null){
+                Intent i = new Intent(this, NowPlayingActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -71,11 +86,23 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatePlayPauseButton();
+    }
+
     @Subscribe
     public void onSongChanged(MediaController.OnSongChangedEvent event) {
         txtSongTitle.setText(event.getSongDetails().getTitle());
         txtArtist.setText(event.getSongDetails().getArtist());
-        //coverImage.setImageURI();
+
+        Bitmap coverArt = Utils.getSmallCover(this, event.getSongDetails().getId());
+        if(coverArt != null) {
+            coverImage.setImageBitmap(coverArt);
+        } else {
+            coverImage.setImageResource(R.drawable.default_cover_image);
+        }
     }
 
     @Subscribe

@@ -1,5 +1,6 @@
 package com.coderave.raveplayer.ui.fragments.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,13 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.coderave.raveplayer.Constants;
 import com.coderave.raveplayer.MediaController;
 import com.coderave.raveplayer.PlayList;
 import com.coderave.raveplayer.R;
 import com.coderave.raveplayer.models.SongDetails;
 import com.coderave.raveplayer.observers.song.AllSongsObserver;
+import com.coderave.raveplayer.services.NotificationService;
 import com.coderave.raveplayer.ui.components.BindableViewHolder;
 import com.coderave.raveplayer.ui.fragments.BaseTabFragment;
 import com.coderave.raveplayer.ui.components.DividerItemDecoration;
@@ -73,7 +75,7 @@ public class AllTracksFragment extends BaseTabFragment {
         public void onBindViewHolder(SimpleViewHolder holder, int position) {
             SongDetails song = mTitles.get(position);
             holder.songTitle.setText(song.getTitle());
-            holder.number.setText(String.format("%s",position+1));
+            holder.number.setText(String.valueOf(position+1));
             holder.artist.setText(song.getArtist());
             holder.itemView.setOnClickListener(v -> {
                 MediaController.getInstance().play(song);
@@ -83,6 +85,9 @@ public class AllTracksFragment extends BaseTabFragment {
                     playList.setListName("AllSongsList");
                 }
                 playList.setCurrent(position);
+                Intent i = new Intent(getActivity(), NotificationService.class);
+                i.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                getActivity().startService(i);
             });
         }
 

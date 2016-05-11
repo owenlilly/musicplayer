@@ -4,4 +4,6 @@
     <string name="btn_text_play">Play</string>
     <string name="background">background</string>
     <string name="cover_image">cover image</string>
+    <string name="cd_play">play button</string>
+    <string name="cd_next">next button</string>
 </resources>
