@@ -71,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        unregisterReceiver(exitBroadcastReceiver);
+        super.onDestroy();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         mBus.register(this);

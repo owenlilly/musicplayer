@@ -9,10 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v7.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -29,12 +27,10 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class PlayerService extends Service {
 
-    private final String LOG_TAG = "PlayerService";
     private final PlayList playlist = PlayList.getInstance();
     private final MediaController mediaController = MediaController.getInstance();
-    private PhoneStateListener mPhoneStateListener = new PlayerPhoneStateListener();
+    private final PhoneStateListener mPhoneStateListener = new PlayerPhoneStateListener();
     private final static int NotificationId = 8763326;
-    private Notification mNotification;
     private NotificationManager mNotificationManager;
     private EventBus bus = EventBus.getDefault();
     private boolean shouldResumePlay = false;
@@ -149,49 +145,40 @@ public class PlayerService extends Service {
             mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        if(mNotification == null){
-            createNotification();
-        }
-
-        updateNotification();
-        mNotificationManager.notify(NotificationId, mNotification);
+        Notification notification = createNotification();
+        updateNotification(notification);
+        mNotificationManager.notify(NotificationId, notification);
     }
 
-    private void createNotification(){
+    private Notification createNotification(){
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.status_bar);
         RemoteViews bigViews = new RemoteViews(getPackageName(), R.layout.status_bar_expanded);
 
         // showing default album image
         views.setViewVisibility(R.id.status_bar_icon, View.VISIBLE);
         views.setViewVisibility(R.id.status_bar_album_art, View.GONE);
-        bigViews.setImageViewBitmap(R.id.status_bar_album_art,
-                Constants.getDefaultAlbumArt(this));
+        bigViews.setImageViewBitmap(R.id.status_bar_album_art, Constants.getDefaultAlbumArt(this));
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, NotificationId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent previousIntent = new Intent(this, PlayerService.class);
         previousIntent.setAction(Constants.ACTION.PREV_ACTION);
-        PendingIntent ppreviousIntent = PendingIntent.getService(this, 0,
-                previousIntent, 0);
+        PendingIntent ppreviousIntent = PendingIntent.getService(this, NotificationId, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent playIntent = new Intent(this, PlayerService.class);
         playIntent.setAction(Constants.ACTION.PLAY_ACTION);
-        PendingIntent pplayIntent = PendingIntent.getService(this, 0,
-                playIntent, 0);
+        PendingIntent pplayIntent = PendingIntent.getService(this, NotificationId, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent nextIntent = new Intent(this, PlayerService.class);
         nextIntent.setAction(Constants.ACTION.NEXT_ACTION);
-        PendingIntent pnextIntent = PendingIntent.getService(this, 0,
-                nextIntent, 0);
+        PendingIntent pnextIntent = PendingIntent.getService(this, NotificationId, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent closeIntent = new Intent(this, PlayerService.class);
         closeIntent.setAction(Constants.ACTION.CLOSE_ACTION);
-        PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
-                closeIntent, 0);
+        PendingIntent pcloseIntent = PendingIntent.getService(this, NotificationId, closeIntent, 0);
 
         views.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
         bigViews.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
@@ -206,10 +193,9 @@ public class PlayerService extends Service {
         bigViews.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
 
         final SongDetails song = mediaController.getCurrentSong();
-        final int playPauseId = mediaController.isPlaying() ? R.drawable.apollo_holo_dark_pause : R.drawable.apollo_holo_dark_play;
 
-        views.setImageViewResource(R.id.status_bar_play, playPauseId);
-        bigViews.setImageViewResource(R.id.status_bar_play, playPauseId);
+        views.setImageViewResource(R.id.status_bar_play, getPlayOrPauseIcon());
+        bigViews.setImageViewResource(R.id.status_bar_play, getPlayOrPauseIcon());
 
         views.setTextViewText(R.id.status_bar_track_name, song.getTitle());
         bigViews.setTextViewText(R.id.status_bar_track_name, song.getTitle());
@@ -217,35 +203,38 @@ public class PlayerService extends Service {
         views.setTextViewText(R.id.status_bar_artist_name, song.getArtist());
         bigViews.setTextViewText(R.id.status_bar_artist_name, song.getArtist());
 
-        mNotification = new Notification.Builder(this)
+        Notification notification = new Notification.Builder(this)
                                         .setSmallIcon(R.mipmap.ic_launcher)
                                         .build();
-        mNotification.contentView    = views;
-        mNotification.bigContentView = bigViews;
-        mNotification.flags          = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-        mNotification.contentIntent  = pendingIntent;
+
+        notification.contentView    = views;
+        notification.bigContentView = bigViews;
+        notification.flags          = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        notification.contentIntent  = pendingIntent;
+
+        return notification;
     }
 
-    private void updateNotification(){
+    private void updateNotification(Notification notification){
         if(mediaController.getCurrentSong() == null)
             return;
 
-        updateNotificationArtist();
-        updateNotificationTitle();
-        updateNotificationPlayPauseIcon();
+        updateNotificationArtist(notification);
+        updateNotificationTitle(notification);
+        updateNotificationPlayPauseIcon(notification);
         updateNotificationCoverArt();
     }
 
-    private void updateNotificationArtist(){
-        mNotification.bigContentView.setTextViewText(R.id.status_bar_artist_name, mediaController.getCurrentSong().getArtist());
+    private void updateNotificationArtist(Notification notification){
+        notification.bigContentView.setTextViewText(R.id.status_bar_artist_name, mediaController.getCurrentSong().getArtist());
     }
 
-    private void updateNotificationTitle(){
-        mNotification.bigContentView.setTextViewText(R.id.status_bar_track_name, mediaController.getCurrentSong().getTitle());
+    private void updateNotificationTitle(Notification notification){
+        notification.bigContentView.setTextViewText(R.id.status_bar_track_name, mediaController.getCurrentSong().getTitle());
     }
 
-    private void updateNotificationPlayPauseIcon(){
-        mNotification.bigContentView.setImageViewResource(R.id.btn_play_pause, getPlayOrPauseIcon());
+    private void updateNotificationPlayPauseIcon(Notification notification){
+        notification.bigContentView.setImageViewResource(R.id.btn_play_pause, getPlayOrPauseIcon());
     }
 
     private void updateNotificationCoverArt(){
@@ -269,7 +258,7 @@ public class PlayerService extends Service {
                 }
             } else if(state == TelephonyManager.CALL_STATE_IDLE) {
                 //Not in call: Play music
-                if(!shouldResumePlay) {
+                if(shouldResumePlay) {
                     mediaController.resume();
                     shouldResumePlay = false;
                 }
