@@ -10,12 +10,10 @@ public class Constants {
 
     public interface ACTION {
         String MAIN_ACTION = "com.coderave.ravelayer.action.main";
-        String INIT_ACTION = "com.coderave.raveplayer.action.init";
         String PREV_ACTION = "com.coderave.raveplayer.action.prev";
         String PLAY_ACTION = "com.coderave.raveplayer.action.play";
         String NEXT_ACTION = "com.coderave.raveplayer.action.next";
-        String STARTFOREGROUND_ACTION = "com.coderave.raveplayer.action.startforeground";
-        String STOPFOREGROUND_ACTION = "com.coderave.raveplayer.action.stopforeground";
+        String CLOSE_ACTION = "com.coderave.raveplayer.action.CLOSE_ACTION";
     }
 
     public interface NOTIFICATION_ID {

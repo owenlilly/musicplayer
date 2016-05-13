@@ -1,7 +1,9 @@
 package com.coderave.raveplayer.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
@@ -12,9 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.coderave.raveplayer.Constants;
 import com.coderave.raveplayer.MediaController;
 import com.coderave.raveplayer.R;
 import com.coderave.raveplayer.models.SongDetails;
+import com.coderave.raveplayer.services.PlayerService;
 import com.coderave.raveplayer.ui.fragments.BaseTabFragment;
 import com.coderave.raveplayer.ui.fragments.main.AlbumsFragment;
 import com.coderave.raveplayer.ui.fragments.main.AllTracksFragment;
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         initPlayPauseButton();
         initCoverImage();
         updatePlayPauseButton();
+        startPlayerService();
+        registerReceiver(exitBroadcastReceiver, new IntentFilter(Constants.ACTION.CLOSE_ACTION));
     }
 
     @Override
@@ -94,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onPlayCompleted(MediaController.OnPlayCompletedEvent event) {
         updatePlayPauseButton();
-        Utils.autoPlayNext();
     }
 
     @Subscribe
@@ -137,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
         btnPlayPause.setAnimDuration(100);
     }
 
+    private void startPlayerService(){
+        startService(new Intent(this, PlayerService.class));
+    }
+
     private void togglePlayPause(){
         if (mediaController.isPlaying()) {
             MediaController.getInstance().pause();
@@ -152,4 +161,11 @@ public class MainActivity extends AppCompatActivity {
             btnPlayPause.setToPlay();
         }
     }
+
+    private final BroadcastReceiver exitBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
 }

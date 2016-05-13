@@ -1,15 +1,16 @@
 package com.coderave.raveplayer.services;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.coderave.raveplayer.Constants;
 import com.coderave.raveplayer.MediaController;
@@ -21,10 +22,12 @@ import com.coderave.raveplayer.ui.MainActivity;
 
 public class NotificationService extends Service {
 
-    Notification status;
     private final String LOG_TAG = "NotificationService";
     private final PlayList playlist = PlayList.getInstance();
     private final MediaController mediaController = MediaController.getInstance();
+    private final static int NotificationId = 8763326;
+    private Notification mNotification;
+    private NotificationManager mNotificationManager;
 
     private RemoteViews views;
     private RemoteViews bigViews;
@@ -37,9 +40,7 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
-            showOrUpdateNotification();
-        } else if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
+        if (intent.getAction().equals(Constants.ACTION.PREV_ACTION)) {
             if(playlist.hasPrev()){
                 mediaController.play(playlist.prev());
                 showOrUpdateNotification();
@@ -60,7 +61,7 @@ public class NotificationService extends Service {
                 showOrUpdateNotification();
             }
         } else if (intent.getAction().equals(
-                Constants.ACTION.STOPFOREGROUND_ACTION)) {
+                Constants.ACTION.CLOSE_ACTION)) {
             Log.i(LOG_TAG, "Received Stop Foreground Intent");
             stopForeground(true);
             stopSelf();
@@ -100,7 +101,7 @@ public class NotificationService extends Service {
                 nextIntent, 0);
 
         Intent closeIntent = new Intent(this, NotificationService.class);
-        closeIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+        closeIntent.setAction(Constants.ACTION.CLOSE_ACTION);
         PendingIntent pcloseIntent = PendingIntent.getService(this, 0,
                 closeIntent, 0);
 
@@ -128,14 +129,22 @@ public class NotificationService extends Service {
         views.setTextViewText(R.id.status_bar_artist_name, song.getArtist());
         bigViews.setTextViewText(R.id.status_bar_artist_name, song.getArtist());
 
-        bigViews.setTextViewText(R.id.status_bar_album_name, song.getDisplayName());
+        mNotification = new Notification.Builder(this).build();
+        mNotification.contentView = views;
+        mNotification.bigContentView = bigViews;
+        mNotification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        mNotification.icon = R.mipmap.ic_launcher;
+        mNotification.contentIntent = pendingIntent;
 
-        status = new Notification.Builder(this).build();
-        status.contentView = views;
-        status.bigContentView = bigViews;
-        status.flags = Notification.FLAG_ONGOING_EVENT;
-        status.icon = R.mipmap.ic_launcher;
-        status.contentIntent = pendingIntent;
-        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, status);
+        if(mNotificationManager == null) {
+            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        mNotificationManager.notify(NotificationId, mNotification);
+        //startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, mNotification);
+    }
+
+    private void createOrUpdateNotification(){
+
     }
 }

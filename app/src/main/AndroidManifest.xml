@@ -3,6 +3,7 @@
     package="com.coderave.raveplayer">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,7 +22,6 @@
 
         <activity android:name=".ui.NowPlayingActivity" />
 
-        <service android:name=".services.NotificationService"
-            android:screenOrientation="portrait"/>
+        <service android:name=".services.PlayerService" />
     </application>
 </manifest>

@@ -95,14 +95,5 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             />
-        <TextView
-            android:ellipsize="marquee"
-            android:layout_gravity="left"
-            android:id="@+id/status_bar_album_name"
-            android:fadingEdge="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            />
     </LinearLayout>
 </RelativeLayout>

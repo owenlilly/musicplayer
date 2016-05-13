@@ -1,6 +1,8 @@
 package com.coderave.raveplayer.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
@@ -52,6 +54,15 @@ public class Utils {
                 .placeholder(R.drawable.default_cover_image)
                 .error(R.drawable.default_cover_image)
                 .into(imageView);
+    }
+
+    public static Bitmap getCoverImage(Context context, SongDetails song){
+        Bitmap bitmap = BitmapFactory.decodeFile(albumArtUrl+song.getAlbumId());
+        if(bitmap == null){
+            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_cover_image);
+        }
+
+        return bitmap;
     }
 
     public static void autoPlayNext() {
