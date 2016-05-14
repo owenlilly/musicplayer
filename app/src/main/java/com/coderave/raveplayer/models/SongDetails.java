@@ -7,7 +7,7 @@ public class SongDetails {
     private final String artist;
     private final String title;
     private final String displayName;
-    private final String duration;
+    private final int duration;
     private final String path;
     private final int albumId;
 
@@ -20,7 +20,7 @@ public class SongDetails {
         this.artist = artist;
         this.title = title;
         this.displayName = displayName;
-        this.duration = duration;
+        this.duration = Integer.parseInt(duration);
         this.path = path;
         this.albumId = albumId;
     }
@@ -41,7 +41,7 @@ public class SongDetails {
         return displayName;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 

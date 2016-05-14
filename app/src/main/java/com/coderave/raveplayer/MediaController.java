@@ -118,19 +118,27 @@ public class MediaController {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource(song.getPath());
-            mediaPlayer.setOnCompletionListener(mp -> {
-                stop();
-                bus.post(new OnPlayCompletedEvent(currentSong));
-            });
-            mediaPlayer.setOnPreparedListener(mp -> {
-                setPlayerState(PlayerState.Playing);
-                bus.post(new OnSongChangedEvent(song));
-                mp.start();
-            });
+            initOnCompletionListener(mediaPlayer);
+            initOnPrepareListener(mediaPlayer, song);
             mediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initOnCompletionListener(MediaPlayer mediaPlayer){
+        mediaPlayer.setOnCompletionListener(mp -> {
+            stop();
+            bus.post(new OnPlayCompletedEvent(currentSong));
+        });
+    }
+
+    private void initOnPrepareListener(MediaPlayer mediaPlayer, SongDetails song){
+        mediaPlayer.setOnPreparedListener(mp -> {
+            setPlayerState(PlayerState.Playing);
+            bus.post(new OnSongChangedEvent(song));
+            mp.start();
+        });
     }
 
     private void setPlayerState(PlayerState newState){

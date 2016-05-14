@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         initTabLayout();
         initPlayPauseButton();
         initCoverImage();
+        initSeekBar();
         updatePlayPauseButton();
         startPlayerService();
         registerReceiver(exitBroadcastReceiver, new IntentFilter(Constants.ACTION.CLOSE_ACTION));
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         txtSongTitle.setText(song.getTitle());
         txtArtist.setText(song.getArtist());
         Utils.loadSmallCoverOrDefaultArt(coverImage, song);
-        seekBar.setMax(Integer.parseInt(event.getSongDetails().getDuration()));
+        seekBar.setMax(event.getSongDetails().getDuration());
     }
 
     @Subscribe
