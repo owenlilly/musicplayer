@@ -12,10 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.coderave.raveplayer.Constants;
 import com.coderave.raveplayer.MediaController;
+import com.coderave.raveplayer.PlayList;
 import com.coderave.raveplayer.R;
 import com.coderave.raveplayer.models.SongDetails;
 import com.coderave.raveplayer.services.PlayerService;
@@ -45,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)         Toolbar toolbar;
     @Bind(R.id.viewpager)       ViewPager viewPager;
     @Bind(R.id.cover_image)     ImageView coverImage;
-
-    public static Context appContext;
+    @Bind(R.id.seekbar)         SeekBar seekBar;
 
     private final MediaController mediaController = MediaController.getInstance();
     private final EventBus mBus = EventBus.getDefault();
@@ -59,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         initBuildSpecificEnhancements();
-
-        appContext = getApplicationContext();
 
         initTabLayout();
         initPlayPauseButton();
@@ -101,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
         txtSongTitle.setText(song.getTitle());
         txtArtist.setText(song.getArtist());
         Utils.loadSmallCoverOrDefaultArt(coverImage, song);
+        seekBar.setMax(Integer.parseInt(event.getSongDetails().getDuration()));
+    }
+
+    @Subscribe
+    public void onProgressUpdate(MediaController.OnProgressUpdateEvent event){
+        seekBar.setProgress(event.getProgress());
     }
 
     @Subscribe
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTabLayout(){
-        final List<BaseTabFragment> tabList = Arrays.<BaseTabFragment>asList(new AllTracksFragment(), new AlbumsFragment());
+        final List<BaseTabFragment> tabList = Arrays.asList(new AllTracksFragment(), new AlbumsFragment());
 
         TabBuilder.with(getSupportFragmentManager())
                     .setTabLayout(tabLayout)
@@ -142,6 +147,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initSeekBar(){
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
     private void initPlayPauseButton(){
         btnPlayPause.setOnClickListener(v -> togglePlayPause());
         btnPlayPause.setColor(Color.WHITE);
@@ -153,10 +177,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void togglePlayPause(){
-        if (mediaController.isPlaying()) {
-            MediaController.getInstance().pause();
-        } else if (mediaController.isPaused()) {
-            MediaController.getInstance().resume();
+        if (mediaController.isPlaying()){
+            mediaController.pause();
+        } else if (mediaController.isPaused()){
+            mediaController.resume();
+        } else if(PlayList.getInstance().current() != null){
+            mediaController.play(PlayList.getInstance().current());
         }
     }
 

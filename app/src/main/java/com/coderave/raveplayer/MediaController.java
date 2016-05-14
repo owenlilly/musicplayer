@@ -9,6 +9,12 @@ import com.coderave.raveplayer.models.SongDetails;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class MediaController {
@@ -18,6 +24,7 @@ public class MediaController {
     private PlayerState playerState = PlayerState.Stopped;
     private MediaPlayer mediaPlayer;
     private SongDetails currentSong;
+    private boolean shouldPublishProgress = false;
     private EventBus bus = EventBus.getDefault();
 
     public static MediaController getInstance() {
@@ -74,6 +81,15 @@ public class MediaController {
         setPlayerState(PlayerState.Paused);
     }
 
+//    public void seekTo(int msec){
+//        if(mediaPlayer != null && currentSong != null){
+//            if(playerState == PlayerState.Stopped){
+//                play(currentSong);
+//                mediaPlayer.seekTo(msec);
+//            }
+//        }
+//    }
+
     public SongDetails getCurrentSong(){
         return currentSong;
     }
@@ -119,7 +135,31 @@ public class MediaController {
 
     private void setPlayerState(PlayerState newState){
         playerState = newState;
+        if(!isPlaying()){
+            shouldPublishProgress = false;
+        } else {
+            startProgressPublisher();
+        }
         bus.post(new OnPlayerStateChangeEvent(newState));
+    }
+
+    private void startProgressPublisher(){
+        shouldPublishProgress = true;
+        Observable.<Integer>create(subscriber ->
+                Schedulers.newThread()
+                        .createWorker()
+                        .schedulePeriodically(() -> publishNextOrComplete(subscriber), 0, 100, TimeUnit.MILLISECONDS)
+            ).observeOn(AndroidSchedulers.mainThread())
+             .subscribe(pos -> bus.post(new OnProgressUpdateEvent(pos)));
+    }
+
+    private void publishNextOrComplete(Subscriber<? super Integer> s) {
+        if(shouldPublishProgress) {
+            s.onNext(mediaPlayer.getCurrentPosition());
+            return;
+        }
+
+        s.onCompleted();
     }
 
     public enum PlayerState {
@@ -162,6 +202,18 @@ public class MediaController {
 
         public PlayerState getPlayerState() {
             return playerState;
+        }
+    }
+
+    public static class OnProgressUpdateEvent {
+        private final int pos;
+
+        public OnProgressUpdateEvent(int pos) {
+            this.pos = pos;
+        }
+
+        public int getProgress(){
+            return pos;
         }
     }
 }

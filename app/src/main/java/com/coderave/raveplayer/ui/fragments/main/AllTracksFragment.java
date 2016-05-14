@@ -107,7 +107,7 @@ public class AllTracksFragment extends BaseTabFragment {
 
             @Bind(R.id.track_number) TextView number;
             @Bind(R.id.track_artist) TextView artist;
-            @Bind(R.id.track_title) TextView songTitle;
+            @Bind(R.id.track_title)  TextView songTitle;
         }
     }
 }

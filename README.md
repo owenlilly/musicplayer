@@ -1,11 +1,24 @@
 ## Description
 
-A music player prototype for Android.
+A free and open source music player prototype for Android, made with love.  Our goal is to have a highly responsive app with a concise and easy to read code base.  The app is still in it's infancy but we will progressively improve until we have a fully featured music player.
+
+*Screenshots coming soon...*
 
 
+## Contributing
+You may contribute by doing any of the following:
+
+* create issues for bugs or enhancements
+* issue pull request for fixed bugs or enhancements
+* writing tests or documentation
+* any other way not mentioned above :)
 
 
-## LICENSE
+## Build Requirements
+This project requires Java 8 to compile as it uses Java 8 lambdas, thanks to the awesome [Retrolambda](https://github.com/orfjackal/retrolambda) Gradle plugin.
+
+
+## License
 
 ```
 Copyright 2016 Owen Lilly
