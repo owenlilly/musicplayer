@@ -66,21 +66,18 @@
                 android:layout_toEndOf="@+id/cover_image"
                 android:layout_toLeftOf="@+id/btn_play_pause"
                 android:layout_toStartOf="@+id/btn_play_pause"
+                android:paddingTop="8dp"
                 android:orientation="vertical">
 
-                <SeekBar
-                    android:id="@+id/seekbar"
-                    android:thumb="@null"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
                 <LinearLayout
                     android:id="@+id/section_media_controller"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
@@ -102,6 +99,12 @@
                         android:textSize="12sp"
                         android:textStyle="italic" />
                 </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekbar"
+                    android:thumb="@null"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <com.coderave.raveplayer.ui.widgets.MaterialPlayPauseButton
