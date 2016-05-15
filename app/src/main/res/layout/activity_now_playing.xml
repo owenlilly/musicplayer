@@ -22,40 +22,54 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-
             <LinearLayout
+                android:id="@+id/media_panel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_alignParentBottom="true"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/media_buttons"
+                <SeekBar
+                    android:id="@+id/seekbar"
+                    style="@style/ThinSeekBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="#55000000"
-                    android:orientation="horizontal">
+                    android:progressDrawable="@drawable/progress_bar"
+                    android:thumb="@null" />
 
-                    <Button
-                        android:id="@+id/btn_prev"
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom">
+                    <LinearLayout
+                        android:id="@+id/media_buttons"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="prev" />
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@drawable/gradient_light_bg"
+                        android:paddingBottom="40dp"
+                        android:paddingTop="40dp">
 
-                    <Button
-                        android:id="@+id/btn_play_pause"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="play" />
+                        <Button
+                            android:id="@+id/btn_prev"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="prev" />
 
-                    <Button
-                        android:id="@+id/btn_next"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="next" />
-                </LinearLayout>
+                        <Button
+                            android:id="@+id/btn_play_pause"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="play" />
+
+                        <Button
+                            android:id="@+id/btn_next"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="next" />
+                    </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
