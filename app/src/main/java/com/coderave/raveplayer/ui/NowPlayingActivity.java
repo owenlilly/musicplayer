@@ -10,10 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.coderave.raveplayer.MediaController;
 import com.coderave.raveplayer.PlayList;
 import com.coderave.raveplayer.R;
+import com.coderave.raveplayer.utils.TimeUtils;
 import com.coderave.raveplayer.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,6 +33,9 @@ public class NowPlayingActivity extends AppCompatActivity {
     @Bind(R.id.btn_next)        Button btnNext;
     @Bind(R.id.cover_image)     ImageView coverImage;
     @Bind(R.id.toolbar)         Toolbar toolbar;
+    @Bind(R.id.seekbar)         SeekBar seekBar;
+    @Bind(R.id.progress)        TextView txtProgress;
+    @Bind(R.id.duration)        TextView txtDuration;
 
     private final MediaController mediaController = MediaController.getInstance();
     private final PlayList playList               = PlayList.getInstance();
@@ -43,6 +49,7 @@ public class NowPlayingActivity extends AppCompatActivity {
         bus.register(this);
 
         initActionBar();
+        initSeekBar();
         initButtonClickListeners();
         initCoverArtIfSongSelected();
         initBuildSpecificEnhancements();
@@ -54,6 +61,7 @@ public class NowPlayingActivity extends AppCompatActivity {
         updatePlayPauseButton();
         updateNextButtonState();
         updatePrevButtonState();
+        txtDuration.setText(TimeUtils.millisToFormatedTime(mediaController.getCurrentSong().getDuration()));
     }
 
     @Override
@@ -74,6 +82,11 @@ public class NowPlayingActivity extends AppCompatActivity {
     }
 
     @Subscribe
+    public void onProgressUpdateEvent(MediaController.OnProgressUpdateEvent event){
+        seekBar.setProgress(event.getProgress());
+    }
+
+    @Subscribe
     public void onPlayStateChangedEvent(MediaController.OnPlayerStateChangeEvent e){
         updatePlayPauseButton();
         updateNextButtonState();
@@ -82,7 +95,32 @@ public class NowPlayingActivity extends AppCompatActivity {
 
     @Subscribe
     public void onSongChangedEvent(MediaController.OnSongChangedEvent e){
+        seekBar.setMax(e.getSongDetails().getDuration());
         Utils.loadLargeCoverOrDefaultArt(coverImage, e.getSongDetails());
+        txtDuration.setText(TimeUtils.millisToFormatedTime(e.getSongDetails().getDuration()));
+    }
+
+    private void initSeekBar(){
+        if(mediaController.getCurrentSong() != null){
+            seekBar.setMax(mediaController.getCurrentSong().getDuration());
+        }
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                txtProgress.setText(TimeUtils.millisToFormatedTime(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mediaController.prepareToSeek();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaController.seekTo(seekBar.getProgress());
+            }
+        });
     }
 
     private void initBuildSpecificEnhancements(){
