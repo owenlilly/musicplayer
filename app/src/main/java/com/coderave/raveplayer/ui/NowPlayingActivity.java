@@ -17,6 +17,7 @@ import com.coderave.raveplayer.MediaController;
 import com.coderave.raveplayer.PlayList;
 import com.coderave.raveplayer.R;
 import com.coderave.raveplayer.models.SongDetails;
+import com.coderave.raveplayer.utils.PlayerUtils;
 import com.coderave.raveplayer.utils.TimeUtils;
 import com.coderave.raveplayer.utils.Utils;
 
@@ -168,13 +169,7 @@ public class NowPlayingActivity extends AppCompatActivity {
             }
         });
 
-        btnPlayPause.setOnClickListener(v -> {
-            if(mediaController.isPlaying()){
-                mediaController.pause();
-            } else if (mediaController.isPaused()){
-                mediaController.resume();
-            }
-        });
+        btnPlayPause.setOnClickListener(v -> PlayerUtils.togglePlayPause());
     }
 
     private void updatePlayPauseButton(){
