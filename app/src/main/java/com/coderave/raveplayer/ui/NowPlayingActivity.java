@@ -56,7 +56,6 @@ public class NowPlayingActivity extends AppCompatActivity {
         updatePrevButtonState();
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

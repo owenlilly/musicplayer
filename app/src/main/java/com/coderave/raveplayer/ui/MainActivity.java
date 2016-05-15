@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             mediaController.pause();
         } else if (mediaController.isPaused()){
             mediaController.resume();
-        } else if(PlayList.getInstance().current() != null){
+        } else if(!PlayList.getInstance().isEmpty()){
             mediaController.play(PlayList.getInstance().current());
         }
     }

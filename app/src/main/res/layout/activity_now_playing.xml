@@ -9,44 +9,52 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/cover_image" />
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <include
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
-    </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
-            android:id="@+id/media_buttons"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="#55000000"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/btn_prev"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="prev" />
+                android:layout_gravity="bottom"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btn_play_pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="play" />
+                <LinearLayout
+                    android:id="@+id/media_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="#55000000"
+                    android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btn_next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="next" />
-        </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_prev"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="prev" />
+
+                    <Button
+                        android:id="@+id/btn_play_pause"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="play" />
+
+                    <Button
+                        android:id="@+id/btn_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="next" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
     </LinearLayout>
 </FrameLayout>

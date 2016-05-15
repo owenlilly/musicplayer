@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/background"
         android:scaleType="fitXY"
-        android:src="@drawable/stones" />
+        android:src="@drawable/app_bg" />
 
     <RelativeLayout
         android:id="@+id/container"

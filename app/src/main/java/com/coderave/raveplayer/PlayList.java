@@ -43,6 +43,10 @@ public class PlayList {
         }
     }
 
+    public boolean isEmpty(){
+        return playlist.isEmpty();
+    }
+
     public int getCurrentPos(){
         return currentPos;
     }
@@ -53,7 +57,16 @@ public class PlayList {
     }
 
     public SongDetails current(){
-        return playlist.get(currentPos);
+        if(!isEmpty()){
+            if(currentPos > NO_POSITION){
+                return playlist.get(currentPos);
+            }
+
+            setCurrent(0);
+            return playlist.get(currentPos);
+        }
+
+        return null;
     }
 
     public void setListName(String name){

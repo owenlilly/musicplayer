@@ -69,10 +69,6 @@ public class MediaController {
         mediaPlayer = null;
     }
 
-    public PlayerState getPlayerState(){
-        return playerState;
-    }
-
     public void resume(){
         getMediaPlayer().start();
         setPlayerState(PlayerState.Playing);
