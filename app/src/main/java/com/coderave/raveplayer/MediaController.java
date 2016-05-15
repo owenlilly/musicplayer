@@ -25,6 +25,7 @@ public class MediaController {
     private MediaPlayer mediaPlayer;
     private SongDetails currentSong;
     private boolean shouldPublishProgress = false;
+    private boolean canSeek = false;
     private EventBus bus = EventBus.getDefault();
 
     public static MediaController getInstance() {
@@ -59,6 +60,7 @@ public class MediaController {
     }
 
     public void stop() {
+        canSeek = false;
         setPlayerState(PlayerState.Stopped);
         if(mediaPlayer == null){
             return;
@@ -81,14 +83,13 @@ public class MediaController {
         setPlayerState(PlayerState.Paused);
     }
 
-//    public void seekTo(int msec){
-//        if(mediaPlayer != null && currentSong != null){
-//            if(playerState == PlayerState.Stopped){
-//                play(currentSong);
-//                mediaPlayer.seekTo(msec);
-//            }
-//        }
-//    }
+    public void seekTo(int millisecond){
+        if(!canSeek){
+            return;
+        }
+
+        mediaPlayer.seekTo(millisecond);
+    }
 
     public SongDetails getCurrentSong(){
         return currentSong;
@@ -135,6 +136,7 @@ public class MediaController {
 
     private void initOnPrepareListener(MediaPlayer mediaPlayer, SongDetails song){
         mediaPlayer.setOnPreparedListener(mp -> {
+            canSeek = true;
             setPlayerState(PlayerState.Playing);
             bus.post(new OnSongChangedEvent(song));
             mp.start();
@@ -153,12 +155,17 @@ public class MediaController {
 
     private void startProgressPublisher(){
         shouldPublishProgress = true;
-        Observable.<Integer>create(subscriber ->
+
+        Observable<Integer> o = Observable.<Integer>create(subscriber ->
                 Schedulers.newThread()
                         .createWorker()
                         .schedulePeriodically(() -> publishNextOrComplete(subscriber), 0, 100, TimeUnit.MILLISECONDS)
-            ).observeOn(AndroidSchedulers.mainThread())
-             .subscribe(pos -> bus.post(new OnProgressUpdateEvent(pos)));
+        );
+
+        o.observeOn(AndroidSchedulers.mainThread())
+         .onBackpressureDrop() // discard unconsumed events
+         .onErrorResumeNext(o) // resubscribe on error...
+         .subscribe(pos -> bus.post(new OnProgressUpdateEvent(pos)), Throwable::printStackTrace);
     }
 
     private void publishNextOrComplete(Subscriber<? super Integer> s) {
