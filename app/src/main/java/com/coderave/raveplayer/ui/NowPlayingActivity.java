@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.coderave.raveplayer.MediaController;
 import com.coderave.raveplayer.PlayList;
 import com.coderave.raveplayer.R;
+import com.coderave.raveplayer.models.SongDetails;
 import com.coderave.raveplayer.utils.TimeUtils;
 import com.coderave.raveplayer.utils.Utils;
 
@@ -61,7 +62,7 @@ public class NowPlayingActivity extends AppCompatActivity {
         updatePlayPauseButton();
         updateNextButtonState();
         updatePrevButtonState();
-        txtDuration.setText(TimeUtils.millisToFormatedTime(mediaController.getCurrentSong().getDuration()));
+        updateMediaInfo();
     }
 
     @Override
@@ -95,9 +96,25 @@ public class NowPlayingActivity extends AppCompatActivity {
 
     @Subscribe
     public void onSongChangedEvent(MediaController.OnSongChangedEvent e){
-        seekBar.setMax(e.getSongDetails().getDuration());
-        Utils.loadLargeCoverOrDefaultArt(coverImage, e.getSongDetails());
-        txtDuration.setText(TimeUtils.millisToFormatedTime(e.getSongDetails().getDuration()));
+        updateMediaInfo();
+    }
+
+    private void updateMediaInfo(){
+        updateActionBar();
+        final SongDetails song = mediaController.getCurrentSong();
+        seekBar.setMax(song.getDuration());
+        Utils.loadLargeCoverOrDefaultArt(coverImage, song);
+        txtDuration.setText(TimeUtils.millisToFormatedTime(song.getDuration()));
+    }
+
+    private void updateActionBar(){
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            if(mediaController.getCurrentSong() != null){
+                actionBar.setTitle(mediaController.getCurrentSong().getTitle());
+            }
+        }
     }
 
     private void initSeekBar(){
@@ -131,10 +148,7 @@ public class NowPlayingActivity extends AppCompatActivity {
 
     private void initActionBar(){
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        updateActionBar();
     }
 
     private void initCoverArtIfSongSelected(){

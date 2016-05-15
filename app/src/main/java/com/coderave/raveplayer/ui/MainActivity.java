@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         initPlayPauseButton();
         initCoverImage();
         initSeekBar();
-        updatePlayPauseButton();
         startPlayerService();
         registerReceiver(exitBroadcastReceiver, new IntentFilter(Constants.ACTION.CLOSE_ACTION));
     }
@@ -91,17 +90,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateMediaInfo();
         updatePlayPauseButton();
     }
 
     @Subscribe
     public void onSongChanged(MediaController.OnSongChangedEvent event) {
-        final SongDetails song = event.getSongDetails();
-
-        txtSongTitle.setText(song.getTitle());
-        txtArtist.setText(song.getArtist());
-        Utils.loadSmallCoverOrDefaultArt(coverImage, song);
-        seekBar.setMax(event.getSongDetails().getDuration());
+        updateMediaInfo();
     }
 
     @Subscribe
@@ -146,6 +141,16 @@ public class MainActivity extends AppCompatActivity {
                 startNowPlayingActivity();
             }
         });
+    }
+
+    private void updateMediaInfo(){
+        final SongDetails song = mediaController.getCurrentSong();
+        if(song == null) return;
+
+        txtSongTitle.setText(song.getTitle());
+        txtArtist.setText(song.getArtist());
+        Utils.loadSmallCoverOrDefaultArt(coverImage, song);
+        seekBar.setMax(song.getDuration());
     }
 
     private void initSeekBar(){
