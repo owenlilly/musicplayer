@@ -83,12 +83,19 @@ public class MediaController {
         setPlayerState(PlayerState.Paused);
     }
 
+    public void prepareToSeek(){
+        shouldPublishProgress = false;
+    }
+
     public void seekTo(int millisecond){
         if(!canSeek){
             return;
         }
 
         mediaPlayer.seekTo(millisecond);
+        if(isPlaying()){
+           startProgressPublisher();
+        }
     }
 
     public SongDetails getCurrentSong(){

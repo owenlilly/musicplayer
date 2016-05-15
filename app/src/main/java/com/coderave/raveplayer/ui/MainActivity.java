@@ -152,19 +152,17 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser){
-                    mediaController.seekTo(progress);
-                }
+
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                mediaController.prepareToSeek();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                mediaController.seekTo(seekBar.getProgress());
             }
         });
     }
