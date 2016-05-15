@@ -22,4 +22,10 @@
         <item name="android:textColor">#88ffffff</item>
         <item name="textAllCaps">true</item>
     </style>
+
+    <style name="ThinSeekBarStyle" parent="@android:style/Widget.SeekBar">
+        <item name="android:minHeight">3dp</item>
+        <item name="android:maxHeight">3dp</item>
+        <item name="android:layout_margin">0dp</item>
+    </style>
 </resources>
