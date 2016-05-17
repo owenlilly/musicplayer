@@ -157,18 +157,8 @@ public class NowPlayingActivity extends AppCompatActivity {
     }
 
     private void initButtonClickListeners(){
-        btnPrev.setOnClickListener(v -> {
-            if(playList.hasPrev()){
-                mediaController.play(playList.prev());
-            }
-        });
-
-        btnNext.setOnClickListener(v -> {
-            if(playList.hasNext()){
-                mediaController.play(playList.next());
-            }
-        });
-
+        btnPrev.setOnClickListener(v -> PlayerUtils.prev());
+        btnNext.setOnClickListener(v -> PlayerUtils.next());
         btnPlayPause.setOnClickListener(v -> PlayerUtils.togglePlayPause());
     }
 
