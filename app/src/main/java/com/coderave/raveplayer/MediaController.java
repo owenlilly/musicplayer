@@ -28,6 +28,10 @@ public class MediaController {
     private boolean canSeek = false;
     private EventBus bus = EventBus.getDefault();
 
+    public MediaController() {
+
+    }
+
     public static MediaController getInstance() {
         if(instance == null){
             synchronized (MediaController.class){
