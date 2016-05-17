@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.coderave.raveplayer.Constants;
 import com.coderave.raveplayer.MediaController;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.cover_image)     ImageView coverImage;
     @Bind(R.id.seekbar)         SeekBar seekBar;
 
+    private boolean doublePressBack = false;
     private final MediaController mediaController = MediaController.getInstance();
     private final EventBus mBus = EventBus.getDefault();
 
@@ -59,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        initBuildSpecificEnhancements();
 
+        initBuildSpecificEnhancements();
         initTabLayout();
         initPlayPauseButton();
         initCoverImage();
@@ -73,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         unregisterReceiver(exitBroadcastReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(doublePressBack){
+            super.onBackPressed();
+            return;
+        }
+
+        doublePressBack = true;
+        Toast.makeText(this, "Press back again send to background", Toast.LENGTH_LONG).show();
+        new Handler().postDelayed(() -> doublePressBack = false, 2000);
     }
 
     @Override
