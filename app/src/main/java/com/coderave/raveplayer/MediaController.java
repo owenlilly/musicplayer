@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 
 public class MediaController {
 
-    private static MediaController instance;
+    private static volatile MediaController instance;
 
     private PlayerState playerState = PlayerState.Stopped;
     private MediaPlayer mediaPlayer;
