@@ -24,8 +24,8 @@ import com.coderave.raveplayer.R;
 import com.coderave.raveplayer.models.SongDetails;
 import com.coderave.raveplayer.services.PlayerService;
 import com.coderave.raveplayer.ui.fragments.BaseTabFragment;
-import com.coderave.raveplayer.ui.fragments.main.AlbumsFragment;
 import com.coderave.raveplayer.ui.fragments.main.AllTracksFragment;
+import com.coderave.raveplayer.ui.fragments.main.FoldersFragment;
 import com.coderave.raveplayer.ui.widgets.MaterialPlayPauseButton;
 import com.coderave.raveplayer.utils.TabBuilder;
 import com.coderave.raveplayer.utils.Utils;
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTabLayout(){
-        final List<BaseTabFragment> tabList = Arrays.asList(new AllTracksFragment(), new AlbumsFragment());
+        final List<BaseTabFragment> tabList = Arrays.asList(new AllTracksFragment(), new FoldersFragment());
 
         TabBuilder.with(getSupportFragmentManager())
                     .setTabLayout(tabLayout)

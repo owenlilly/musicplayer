@@ -24,7 +24,9 @@ public class PlayList {
     public static PlayList getInstance(){
         if(instance == null) {
             synchronized (PlayList.class) {
-                instance = new PlayList();
+                if(instance == null) {
+                    instance = new PlayList();
+                }
             }
         }
 

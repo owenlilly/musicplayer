@@ -35,7 +35,9 @@ public class MediaController {
     public static MediaController getInstance() {
         if(instance == null){
             synchronized (MediaController.class){
-                instance = new MediaController();
+                if(instance == null) {
+                    instance = new MediaController();
+                }
             }
         }
 
@@ -113,7 +115,9 @@ public class MediaController {
     private MediaPlayer getMediaPlayer(){
         if(mediaPlayer == null){
             synchronized (MediaController.class){
-                mediaPlayer = new MediaPlayer();
+                if(mediaPlayer == null) {
+                    mediaPlayer = new MediaPlayer();
+                }
             }
         }
 
@@ -163,7 +167,7 @@ public class MediaController {
     private void startProgressPublisher(){
         shouldPublishProgress = true;
 
-        Observable<Integer> o = Observable.<Integer>create(subscriber ->
+        Observable<Integer> o = Observable.create(subscriber ->
                 Schedulers.newThread()
                         .createWorker()
                         .schedulePeriodically(() -> publishNextOrComplete(subscriber), 0, 100, TimeUnit.MILLISECONDS)
