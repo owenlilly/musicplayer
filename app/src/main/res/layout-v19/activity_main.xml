@@ -23,6 +23,12 @@
             android:layout_above="@+id/media_panel"
             android:orientation="vertical">
 
+            <!--<View-->
+                <!--android:id="@+id/status_bar_bg"-->
+                <!--android:background="@color/colorSecondary"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content" />-->
+
             <include
                 android:id="@+id/toolbar"
                 layout="@layout/toolbar" />

@@ -2,14 +2,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="#88ffffff" />
+            <solid android:color="@color/seekBarBackground" />
             <size android:height="2dp" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <solid android:color="#ffffff" />
+                <solid android:color="@color/seekBarProgress" />
                 <size android:height="2dp" />
             </shape>
         </clip>
