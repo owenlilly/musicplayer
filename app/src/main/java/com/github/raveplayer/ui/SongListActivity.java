@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.raveplayer.MediaController;
-import com.github.raveplayer.PlayList;
+import com.github.raveplayer.PlayingQueue;
 import com.github.raveplayer.R;
 import com.github.raveplayer.models.FolderDetails;
 import com.github.raveplayer.models.SongDetails;
@@ -59,7 +59,7 @@ public class SongListActivity extends AppCompatActivity {
     public class SongListRecyclerAdapter extends RecyclerView.Adapter<SongListRecyclerAdapter.SongListViewHolder> {
 
         private final List<SongDetails> mTitles;
-        private final PlayList playList = PlayList.getInstance();
+        private final PlayingQueue playList = PlayingQueue.getInstance();
 
         public SongListRecyclerAdapter(List<SongDetails> titles) {
             mTitles = titles;

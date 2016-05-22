@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.raveplayer.MediaController;
-import com.github.raveplayer.PlayList;
+import com.github.raveplayer.PlayingQueue;
 import com.github.raveplayer.R;
 import com.github.raveplayer.models.SongDetails;
 import com.squareup.picasso.Picasso;
@@ -66,7 +66,7 @@ public class Utils {
     }
 
     public static void autoPlayNext() {
-        final PlayList playlist = PlayList.getInstance();
+        final PlayingQueue playlist = PlayingQueue.getInstance();
         final MediaController mediaController = MediaController.getInstance();
 
         switch (playlist.getLoopStyle()) {

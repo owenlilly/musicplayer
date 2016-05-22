@@ -83,6 +83,15 @@ public class MediaController {
         setPlayerState(PlayerState.Paused);
     }
 
+    public int getProgress(){
+        int pos = -1;
+        if(mediaPlayer != null){
+            pos = mediaPlayer.getCurrentPosition();
+        }
+
+        return pos;
+    }
+
     public void prepareToSeek(){
         shouldPublishProgress = false;
     }

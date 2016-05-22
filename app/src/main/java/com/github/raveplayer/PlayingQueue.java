@@ -3,29 +3,32 @@ package com.github.raveplayer;
 
 import com.github.raveplayer.models.SongDetails;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 
-public class PlayList {
+public class PlayingQueue {
     private static final int NO_POSITION = -1;
     private final List<SongDetails> playlist = new ArrayList<>();
-    private static volatile PlayList instance;
+    private static volatile PlayingQueue instance;
     private int currentPos;
     private String listName = "";
     private LoopStyle loopStyle;
+    private EventBus bus = EventBus.getDefault();
 
-    private PlayList(){
+    private PlayingQueue(){
         setCurrent(NO_POSITION);
         setLoopStyle(LoopStyle.NO_LOOP);
     }
 
-    public static PlayList getInstance(){
+    public static PlayingQueue getInstance(){
         if(instance == null) {
-            synchronized (PlayList.class) {
+            synchronized (PlayingQueue.class) {
                 if(instance == null) {
-                    instance = new PlayList();
+                    instance = new PlayingQueue();
                 }
             }
         }
@@ -51,11 +54,6 @@ public class PlayList {
 
     public int getCurrentPos(){
         return currentPos;
-    }
-
-    public SongDetails prev(){
-        currentPos -= 1;
-        return playlist.get(currentPos);
     }
 
     public SongDetails current(){
@@ -93,6 +91,7 @@ public class PlayList {
 
     public void setLoopStyle(LoopStyle loopStyle){
         this.loopStyle = loopStyle;
+        bus.post(new OnLoopStyleChangedEvent(loopStyle));
     }
 
     public LoopStyle getLoopStyle(){
@@ -104,10 +103,21 @@ public class PlayList {
     }
 
     public boolean hasNext() {
-        return playlist.size() > (currentPos+1);
+        return playlist.size() > (currentPos+1) ;
+    }
+
+    public SongDetails prev(){
+        if(!hasPrev()){
+            setCurrent(playlist.size()-1);
+        }
+        currentPos -= 1;
+        return playlist.get(currentPos);
     }
 
     public SongDetails next() {
+        if(!hasNext()){
+            setCurrent(NO_POSITION);
+        }
         currentPos += 1;
         return playlist.get(currentPos);
     }
@@ -119,6 +129,7 @@ public class PlayList {
     public void remove(int pos){
         if(pos > NO_POSITION && pos < playlist.size()) {
             playlist.remove(pos);
+            bus.post(new OnSongRemovedEvent());
         }
     }
 
@@ -127,4 +138,18 @@ public class PlayList {
         LOOP_LIST,
         NO_LOOP
     }
+
+    public static class OnLoopStyleChangedEvent{
+        private final LoopStyle loopStyle;
+
+        public OnLoopStyleChangedEvent(LoopStyle loopStyle) {
+            this.loopStyle = loopStyle;
+        }
+
+        public LoopStyle getLoopStyle() {
+            return loopStyle;
+        }
+    }
+
+    public static class OnSongRemovedEvent { }
 }

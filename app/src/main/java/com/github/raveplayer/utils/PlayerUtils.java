@@ -1,23 +1,23 @@
 package com.github.raveplayer.utils;
 
 import com.github.raveplayer.MediaController;
-import com.github.raveplayer.PlayList;
+import com.github.raveplayer.PlayingQueue;
 
 
 public class PlayerUtils {
 
-    private static PlayList playList = PlayList.getInstance();
+    private static PlayingQueue playingList = PlayingQueue.getInstance();
     private static MediaController mediaController = MediaController.getInstance();
 
     public static void prev(){
-        if(playList.hasPrev()){
-            mediaController.play(playList.prev());
+        if(!playingList.isEmpty()){
+            mediaController.play(playingList.prev());
         }
     }
 
     public static void next(){
-        if(playList.hasNext()){
-            mediaController.play(playList.next());
+        if(!playingList.isEmpty()){
+            mediaController.play(playingList.next());
         }
     }
 
@@ -26,8 +26,8 @@ public class PlayerUtils {
             mediaController.pause();
         } else if (mediaController.isPaused()){
             mediaController.resume();
-        } else if(!playList.isEmpty()){
-            mediaController.play(playList.current());
+        } else if(!playingList.isEmpty()){
+            mediaController.play(playingList.current());
         }
     }
 }

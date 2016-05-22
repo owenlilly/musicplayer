@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196f3</color>
-    <color name="colorPrimaryDark">#1976d2</color>
-    <color name="colorAccent">#26a69a</color>
+    <color name="colorPrimary">#00796b</color>
+    <color name="colorPrimaryDark">#004d40</color>
+    <color name="colorAccent">#78909c</color>
 
     <color name="colorSecondary">#455a64</color>
     <color name="textWhite">#ffffff</color>
@@ -18,5 +18,5 @@
     <color name="dividerDark">#1fffffff</color>
 
     <color name="seekBarProgress">@color/colorAccent</color>
-    <color name="seekBarBackground">#6126a69a</color>
+    <color name="seekBarBackground">#6178909c</color>
 </resources>

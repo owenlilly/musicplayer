@@ -2,14 +2,14 @@ package com.github.raveplayer.models;
 
 
 public class AlbumDetails {
-    int id;
+    int _id;
     String album;
     String artist;
     String albumArt;
     int numberOfSongs;
 
     public AlbumDetails(int id, String album, String artist, String albumArt, int numberOfSongs) {
-        this.id = id;
+        this._id = id;
         this.album = album;
         this.artist = artist;
         this.albumArt = albumArt;
@@ -17,7 +17,7 @@ public class AlbumDetails {
     }
 
     public int getId() {
-        return id;
+        return _id;
     }
 
     public String getAlbum() {

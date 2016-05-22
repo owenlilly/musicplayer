@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.telephony.PhoneStateListener;
@@ -16,8 +17,10 @@ import android.widget.RemoteViews;
 
 import com.github.raveplayer.Constants;
 import com.github.raveplayer.MediaController;
-import com.github.raveplayer.PlayList;
+import com.github.raveplayer.PlayingQueue;
 import com.github.raveplayer.R;
+import com.github.raveplayer.database.CupboardDbHelper;
+import com.github.raveplayer.models.PlayingState;
 import com.github.raveplayer.models.SongDetails;
 import com.github.raveplayer.ui.MainActivity;
 import com.github.raveplayer.utils.Utils;
@@ -25,9 +28,14 @@ import com.github.raveplayer.utils.Utils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import nl.nl2312.rxcupboard.RxCupboard;
+import nl.nl2312.rxcupboard.RxDatabase;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+
 public class PlayerService extends Service {
 
-    private final PlayList playlist = PlayList.getInstance();
+    private final PlayingQueue playlist = PlayingQueue.getInstance();
     private final MediaController mediaController = MediaController.getInstance();
     private final PhoneStateListener mPhoneStateListener = new PlayerPhoneStateListener();
     private final static int NotificationId = 8763326;

@@ -14,7 +14,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.raveplayer.MediaController;
-import com.github.raveplayer.PlayList;
+import com.github.raveplayer.PlayingQueue;
 import com.github.raveplayer.R;
 import com.github.raveplayer.models.SongDetails;
 import com.github.raveplayer.utils.PlayerUtils;
@@ -33,6 +33,8 @@ public class NowPlayingActivity extends AppCompatActivity {
     @Bind(R.id.btn_prev)        Button btnPrev;
     @Bind(R.id.btn_play_pause)  Button btnPlayPause;
     @Bind(R.id.btn_next)        Button btnNext;
+    @Bind(R.id.btn_shuffle)     Button btnShuffle;
+    @Bind(R.id.btn_repeat)      Button btnRepeat;
     @Bind(R.id.cover_image)     ImageView coverImage;
     @Bind(R.id.toolbar)         Toolbar toolbar;
     @Bind(R.id.seekbar)         SeekBar seekBar;
@@ -40,7 +42,7 @@ public class NowPlayingActivity extends AppCompatActivity {
     @Bind(R.id.duration)        TextView txtDuration;
 
     private final MediaController mediaController = MediaController.getInstance();
-    private final PlayList playList               = PlayList.getInstance();
+    private final PlayingQueue playingQueue       = PlayingQueue.getInstance();
     private final EventBus bus                    = EventBus.getDefault();
 
     @Override
@@ -55,15 +57,28 @@ public class NowPlayingActivity extends AppCompatActivity {
         initButtonClickListeners();
         initCoverArtIfSongSelected();
         initBuildSpecificEnhancements();
+
+        btnRepeat.setOnClickListener(v -> {
+            switch (playingQueue.getLoopStyle()) {
+                case NO_LOOP:
+                    playingQueue.setLoopStyle(PlayingQueue.LoopStyle.LOOP_LIST);
+                    break;
+                case LOOP_LIST:
+                    playingQueue.setLoopStyle(PlayingQueue.LoopStyle.LOOP_CURRENT);
+                    break;
+                default:
+                    playingQueue.setLoopStyle(PlayingQueue.LoopStyle.NO_LOOP);
+                    break;
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         updatePlayPauseButton();
-        updateNextButtonState();
-        updatePrevButtonState();
         updateMediaInfo();
+        updateRepeatButton(playingQueue.getLoopStyle());
     }
 
     @Override
@@ -91,13 +106,22 @@ public class NowPlayingActivity extends AppCompatActivity {
     @Subscribe
     public void onPlayStateChangedEvent(MediaController.OnPlayerStateChangeEvent e){
         updatePlayPauseButton();
-        updateNextButtonState();
-        updatePrevButtonState();
     }
 
     @Subscribe
     public void onSongChangedEvent(MediaController.OnSongChangedEvent e){
         updateMediaInfo();
+    }
+
+    @Subscribe
+    public void onLoopStyleChangedEvent(PlayingQueue.OnLoopStyleChangedEvent event){
+        updateRepeatButton(event.getLoopStyle());
+    }
+
+    @Subscribe
+    public void onSongRemovedFromQueueEvent(PlayingQueue.OnSongRemovedEvent event){
+        updatePrevButtonState();
+        updateNextButtonState();
     }
 
     private void updateMediaInfo(){
@@ -171,15 +195,29 @@ public class NowPlayingActivity extends AppCompatActivity {
     }
 
     private void updatePrevButtonState(){
-        if(!playList.hasPrev()){
+        if(!playingQueue.hasPrev()){
             btnPrev.setEnabled(false);
         } else {
             btnPrev.setEnabled(true);
         }
     }
 
+    private void updateRepeatButton(PlayingQueue.LoopStyle loopStyle){
+        switch (loopStyle) {
+            case NO_LOOP:
+                btnRepeat.setText("No Repeat");
+                break;
+            case LOOP_CURRENT:
+                btnRepeat.setText("Repeat 1");
+                break;
+            case LOOP_LIST:
+                btnRepeat.setText("Repeat List");
+                break;
+        }
+    }
+
     private void updateNextButtonState(){
-        if(!playList.hasNext()){
+        if(playingQueue.isEmpty()){
             btnNext.setEnabled(false);
         } else {
             btnNext.setEnabled(true);

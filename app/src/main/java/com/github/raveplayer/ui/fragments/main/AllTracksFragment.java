@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.raveplayer.MediaController;
-import com.github.raveplayer.PlayList;
+import com.github.raveplayer.PlayingQueue;
 import com.github.raveplayer.R;
 import com.github.raveplayer.models.SongDetails;
 import com.github.raveplayer.observers.song.AllSongsObserver;
@@ -57,7 +57,7 @@ public class AllTracksFragment extends BaseTabFragment {
     public class AllTracksRecyclerAdapter extends RecyclerView.Adapter<AllTracksRecyclerAdapter.SimpleViewHolder> {
 
         private final List<SongDetails> mTitles;
-        private final PlayList playList = PlayList.getInstance();
+        private final PlayingQueue playList = PlayingQueue.getInstance();
 
         public AllTracksRecyclerAdapter(List<SongDetails> titles) {
             mTitles = titles;

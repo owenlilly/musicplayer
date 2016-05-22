@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.github.raveplayer.Constants;
 import com.github.raveplayer.MediaController;
-import com.github.raveplayer.PlayList;
+import com.github.raveplayer.PlayingQueue;
 import com.github.raveplayer.R;
 import com.github.raveplayer.models.SongDetails;
 import com.github.raveplayer.services.PlayerService;
@@ -131,11 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initBuildSpecificEnhancements() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-//            View v = findViewById(R.id.status_bar_bg);
-//            if(v == null) return;
-//            ViewGroup.LayoutParams params = v.getLayoutParams();
-//            params.height = Utils.getStatusBarHeight(this);
-//            v.setLayoutParams(params);
             Utils.applyKitKatToolbarPadding(toolbar);
         }
     }
@@ -207,8 +202,8 @@ public class MainActivity extends AppCompatActivity {
             mediaController.pause();
         } else if (mediaController.isPaused()){
             mediaController.resume();
-        } else if(!PlayList.getInstance().isEmpty()){
-            mediaController.play(PlayList.getInstance().current());
+        } else if(!PlayingQueue.getInstance().isEmpty()){
+            mediaController.play(PlayingQueue.getInstance().current());
         }
     }
 

@@ -58,24 +58,22 @@
                         android:id="@+id/progress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
-                        android:textColor="#ffffff" />
+                        android:textSize="13sp" />
 
                     <SeekBar
                         android:id="@+id/seekbar"
                         style="@style/ThinSeekBarStyle"
+                        android:thumb="@drawable/seek_bar_thumb_normal"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:progressDrawable="@drawable/progress_bar"
-                        android:thumb="@null" />
+                        android:progressDrawable="@drawable/progress_bar" />
 
                     <TextView
                         android:id="@+id/duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
-                        android:textColor="#ffffff" />
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <FrameLayout
@@ -84,10 +82,16 @@
 
                     <LinearLayout
                         android:id="@+id/media_buttons"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_shuffle"
+                            android:text="Shuffle On"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
                         <Button
                             android:id="@+id/btn_prev"
@@ -108,6 +112,12 @@
                             android:text="next" />
                     </LinearLayout>
                 </FrameLayout>
+
+                <Button
+                    android:id="@+id/btn_repeat"
+                    android:text="No Repeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
